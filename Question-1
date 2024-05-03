@@ -1,0 +1,54 @@
+import time
+import matplotlib.pyplot as plt
+
+def fibonacci_recursive(n):
+    if n <= 1:
+        return n
+    else:
+        return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
+
+def fibonacci_bottom_up(n):
+    if n <= 1:
+        return n
+    fib = [0] * (n + 1)
+    fib[1] = 1
+    for i in range(2, n + 1):
+        fib[i] = fib[i - 1] + fib[i - 2]
+    return fib[n]
+
+# Time measurement for both methods
+def measure_fibonacci_times(max_n):
+    times_recursive = []
+    times_bottom_up = []
+
+    for i in range(1, max_n + 1):
+        # Measure recursive (up to n=20 only to avoid long computation time)
+        if i > 20:
+            times_recursive.append(None)  # Append None for n > 20 due to infeasibility
+        else:
+            start_time = time.time()
+            fibonacci_recursive(i)
+            end_time = time.time()
+            times_recursive.append(end_time - start_time)
+
+        # Measure bottom-up
+        start_time = time.time()
+        fibonacci_bottom_up(i)
+        end_time = time.time()
+        times_bottom_up.append(end_time - start_time)
+
+    return times_recursive, times_bottom_up
+
+# Measure for n = 1 to 100
+times_recursive, times_bottom_up = measure_fibonacci_times(100)
+
+# Plot the results
+plt.figure(figsize=(14, 7))
+plt.plot(range(1, 21), times_recursive[:20], label='Top-Down Recursive')
+plt.plot(range(1, 101), times_bottom_up, label='Bottom-Up DP')
+plt.xlabel('n')
+plt.ylabel('Execution Time (seconds)')
+plt.title('Execution Time for Fibonacci Numbers (n=1 to n=100)')
+plt.legend()
+plt.grid(True)
+plt.show()
